@@ -5,6 +5,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
   && add-apt-repository ppa:neovim-ppa/unstable -y \
   && DEBIAN_FRONTEND=noninteractive apt-get update \
   && apt-get install -y \
+    bsdmainutils \
     build-essential \
     curl \
     file \
@@ -24,7 +25,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8 LANGUAGE en_US:en LC_ALL en_US.UTF-8
 
-RUN useradd --create-home --groups sudo --shell /usr/bin/zsh davidosomething
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+  && useradd --create-home --groups sudo --shell /usr/bin/zsh davidosomething
 USER davidosomething
 WORKDIR /home/davidosomething
 
