@@ -37,4 +37,11 @@ RUN git clone https://github.com/davidosomething/dotfiles.git .dotfiles \
   && cd .dotfiles \
   && DKO_AUTO=1 ./bootstrap/symlink
 
+# pre-install zinit
+RUN git clone https://github.com/zdharma-continuum/zinit "${XDG_DATA_HOME}/bin"
+
+# pre-install nvim plugins and build tree-sitter
+# sleep is a hack, see https://github.com/nvim-treesitter/nvim-treesitter/issues/2900#issuecomment-1118694272
+RUN nvim --headless -c 'TSUpdateSync' -c 'sleep 20' -c 'qa'
+
 ENTRYPOINT [ "/usr/bin/zsh" ]
