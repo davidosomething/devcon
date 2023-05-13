@@ -2,27 +2,27 @@ FROM ubuntu:jammy
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    tzdata \
-    software-properties-common \
+  tzdata \
+  software-properties-common \
   && add-apt-repository ppa:neovim-ppa/unstable -y \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    bsdmainutils \
-    build-essential \
-    curl \
-    file \
-    fuse \
-    fzf \
-    git \
-    libfuse2 \
-    locales \
-    neovim \
-    ripgrep \
-    software-properties-common \
-    sudo \
-    unzip \
-    wget \
-    zsh \
+  bsdmainutils \
+  build-essential \
+  curl \
+  file \
+  fuse \
+  fzf \
+  git \
+  libfuse2 \
+  locales \
+  neovim \
+  ripgrep \
+  software-properties-common \
+  sudo \
+  unzip \
+  wget \
+  zsh \
   && rm -rf /var/lib/apt/lists/* \
   && locale-gen en_US.UTF-8
 
@@ -33,13 +33,21 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 USER davidosomething
 WORKDIR /home/davidosomething
 
+# cache bust
+ADD --chown=davidosomething:davidosomething \
+  https://api.github.com/repos/davidosomething/dotfiles/git/refs/heads/master \
+  dotfiles-version.json
 RUN git clone https://github.com/davidosomething/dotfiles.git .dotfiles \
   && cd .dotfiles \
   && DKO_AUTO=1 ./bootstrap/symlink
 
+ADD --chown=davidosomething:davidosomething \
+  https://api.github.com/repos/zdharma-continuum/zinit/git/refs/heads/main \
+  zinit-version.json
 RUN git clone \
   https://github.com/zdharma-continuum/zinit \
-  /home/davidosomething/.local/share/zinit/bin
+  /home/davidosomething/.local/share/zinit/bin \
+  && zsh -c "source /home/davidosomething/.dotfiles/zsh/dot.zshrc"
 
 RUN nvim --headless -c 'Lazy! sync' -c 'qa'
 
