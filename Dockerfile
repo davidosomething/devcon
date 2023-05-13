@@ -37,7 +37,9 @@ RUN git clone https://github.com/davidosomething/dotfiles.git .dotfiles \
   && cd .dotfiles \
   && DKO_AUTO=1 ./bootstrap/symlink
 
-RUN git clone https://github.com/zdharma-continuum/zinit "${XDG_DATA_HOME}/bin"
+RUN git clone \
+  https://github.com/zdharma-continuum/zinit \
+  /home/davidosomething/.local/share/zinit/bin
 
 RUN nvim --headless -c 'Lazy! sync' -c 'qa'
 
