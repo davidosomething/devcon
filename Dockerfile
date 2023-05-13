@@ -1,10 +1,12 @@
 FROM ubuntu:jammy
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-  && apt-get install -y tzdata software-properties-common \
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    tzdata \
+    software-properties-common \
   && add-apt-repository ppa:neovim-ppa/unstable -y \
-  && DEBIAN_FRONTEND=noninteractive apt-get update \
-  && apt-get install -y \
+  && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     bsdmainutils \
     build-essential \
     curl \
@@ -18,11 +20,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     ripgrep \
     software-properties-common \
     sudo \
+    unzip \
     wget \
     zsh \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && locale-gen en_US.UTF-8
 
-RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8 LANGUAGE en_US:en LC_ALL en_US.UTF-8
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
@@ -30,9 +33,8 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
 USER davidosomething
 WORKDIR /home/davidosomething
 
-RUN DKO_AUTO=1 \
-  git clone https://github.com/davidosomething/dotfiles.git .dotfiles \
+RUN git clone https://github.com/davidosomething/dotfiles.git .dotfiles \
   && cd .dotfiles \
-  && ./bootstrap/symlink
+  && DKO_AUTO=1 ./bootstrap/symlink
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
