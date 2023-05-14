@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  DEST: ${{ env.REGISTRY }}/${{ github.actor }}/${{ github.repository }}:latest
 
 jobs:
   publish-docker-image:
@@ -24,8 +24,8 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build the hello-docker Docker image
+      - name: Build and push docker image
         run: |
-             docker build . --tag ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest
-             docker run ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest
-             docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:latest
+             docker build . --tag ${{ env.DEST }}
+             docker run ${{ env.DEST }}
+             docker push ${{ env.DEST }}
