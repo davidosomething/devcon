@@ -6,6 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  VERSION: latest
 
 jobs:
   publish-docker-image:
@@ -13,8 +14,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    env:
-      DEST: ${{ env.REGISTRY }}/${{ github.actor }}/${{ github.repository }}:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -27,6 +26,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push docker image
         run: |
-             docker build . --tag ${{ env.DEST }}
-             docker run ${{ env.DEST }}
-             docker push ${{ env.DEST }}
+          docker build . --tag "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
+          docker run "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
+          docker push "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
