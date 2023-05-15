@@ -26,7 +26,9 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* \
   && locale-gen en_US.UTF-8
 
-ENV LANG en_US.UTF-8 LANGUAGE en_US:en LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 EXPOSE 22
 RUN systemctl enable ssh && systemctl start ssh
