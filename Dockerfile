@@ -17,6 +17,7 @@ RUN apt-get update \
   libfuse2 \
   locales \
   neovim \
+  openssh-server && \
   ripgrep \
   software-properties-common \
   sudo \
@@ -27,6 +28,8 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8
 
 ENV LANG en_US.UTF-8 LANGUAGE en_US:en LC_ALL en_US.UTF-8
+
+RUN systemctl ssh start && systemctl ssh enable
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
   && useradd --create-home --groups sudo --shell /usr/bin/zsh davidosomething
