@@ -17,7 +17,7 @@ RUN apt-get update \
   libfuse2 \
   locales \
   neovim \
-  openssh-server && \
+  openssh-server \
   ripgrep \
   sudo \
   unzip \
