@@ -2,8 +2,8 @@ FROM ubuntu:jammy
 
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  tzdata \
   software-properties-common \
+  tzdata \
   && add-apt-repository ppa:neovim-ppa/unstable -y \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -19,7 +19,6 @@ RUN apt-get update \
   neovim \
   openssh-server && \
   ripgrep \
-  software-properties-common \
   sudo \
   unzip \
   wget \
