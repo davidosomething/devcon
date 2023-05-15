@@ -29,7 +29,7 @@ RUN apt-get update \
 ENV LANG en_US.UTF-8 LANGUAGE en_US:en LC_ALL en_US.UTF-8
 
 EXPOSE 22
-RUN ufw allow 22/tcp && systemctl enable ssh && systemctl start ssh
+RUN systemctl enable ssh && systemctl start ssh
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
   && useradd --create-home --groups sudo --shell /usr/bin/zsh davidosomething
