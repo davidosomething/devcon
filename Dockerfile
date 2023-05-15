@@ -17,7 +17,6 @@ RUN apt-get update \
   libfuse2 \
   locales \
   neovim \
-  openssh-server \
   ripgrep \
   sudo \
   unzip \
@@ -31,7 +30,6 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 EXPOSE 22
-RUN systemctl enable ssh && systemctl start ssh
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
   && useradd --create-home --groups sudo --shell /usr/bin/zsh davidosomething
@@ -55,7 +53,5 @@ RUN git clone \
   && zsh -c "source /home/davidosomething/.dotfiles/zsh/dot.zshrc"
 
 RUN nvim --headless -c 'Lazy! sync' -c 'qa'
-
-RUN ssh-import-id gh:davidosomething
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
