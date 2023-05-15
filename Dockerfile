@@ -18,6 +18,7 @@ RUN apt-get update \
   locales \
   neovim \
   ripgrep \
+  rsync \
   sudo \
   unzip \
   wget \
