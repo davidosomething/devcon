@@ -54,4 +54,6 @@ RUN git clone \
 
 RUN nvim --headless -c 'Lazy! sync' -c 'qa'
 
+RUN curl https://github.com/davidosomething.keys >> /home/davidosomething/.ssh/authorized_keys
+
 ENTRYPOINT [ "/usr/bin/zsh" ]
