@@ -28,7 +28,8 @@ RUN apt-get update \
 
 ENV LANG en_US.UTF-8 LANGUAGE en_US:en LC_ALL en_US.UTF-8
 
-RUN systemctl ssh start && systemctl ssh enable
+EXPOSE 22
+RUN ufw allow 22/tcp && systemctl enable ssh && systemctl start ssh
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
   && useradd --create-home --groups sudo --shell /usr/bin/zsh davidosomething
@@ -53,6 +54,6 @@ RUN git clone \
 
 RUN nvim --headless -c 'Lazy! sync' -c 'qa'
 
-RUN curl https://github.com/davidosomething.keys >> /home/davidosomething/.ssh/authorized_keys
+RUN ssh-import-id gh:davidosomething
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
