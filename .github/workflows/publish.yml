@@ -3,6 +3,11 @@ name: publish
 on:
   push:
     branches: ['master']
+  repository_dispatch:
+    types: [dotfiles_update]
+  schedule:
+    # midnightly
+    - cron: '0 0 * * *'
 
 env:
   REGISTRY: ghcr.io
