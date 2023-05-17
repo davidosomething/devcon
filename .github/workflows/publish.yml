@@ -33,5 +33,4 @@ jobs:
       - name: Build and push docker image
         run: |
           docker build . --tag "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
-          docker run "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
           docker push "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
