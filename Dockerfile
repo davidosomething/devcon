@@ -117,6 +117,7 @@ ARG MASON_PKGS="\
   lua-language-server \
   markdownlint \
   prettier \
+  ruff-lsp \
   selene \
   shellcheck \
   shfmt \
