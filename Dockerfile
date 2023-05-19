@@ -23,6 +23,20 @@ RUN apt-get update \
   unzip \
   wget \
   zsh \
+  libbz2-dev \
+  libffi-dev \
+  liblzma-dev \
+  libncursesw5-dev \
+  libreadline-dev \
+  libsqlite3-dev \
+  libssl-dev \
+  libxml2-dev \
+  libxmlsec1-dev \
+  llvm \
+  make \
+  tk-dev \
+  xz-utils \
+  zlib1g-dev \
   && rm -rf /var/lib/apt/lists/* \
   && locale-gen en_US.UTF-8
 
@@ -68,10 +82,54 @@ RUN cat "${XDG_CACHE_HOME}/zinit-version.json" \
 
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git \
-  && asdf install nodejs latest \
-  && asdf global nodejs latest \
-  && cat "${HOME}/.tool-versions"
+  && asdf plugin add python
 
-RUN nvim --headless -c 'Lazy! sync' -c 'qa'
+ARG NODE_VER=latest
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && asdf install nodejs ${NODE_VER} \
+  && asdf global nodejs ${NODE_VER}
+
+ARG PYTHON_VER=3.11.3
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && asdf install python ${PYTHON_VER} \
+  && asdf global python ${PYTHON_VER}
+
+RUN cat "${HOME}/.tool-versions"
+
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && nvim --headless -c 'Lazy! sync' -c 'qa'
+
+ARG MASON_PKGS="\
+  ansible-language-server \
+  beautysh \
+  black \
+  css-lsp \
+  cssmodules-language-server \
+  docker-compose-language-service \
+  dockerfile-language-server \
+  editorconfig-checker \
+  eslint-lsp \
+  html-lsp \
+  isort \
+  jdtls \
+  jedi-language-server \
+  json-lsp \
+  lua-language-server \
+  markdownlint \
+  prettier \
+  selene \
+  shellcheck \
+  shfmt \
+  stylelint-lsp \
+  stylua \
+  tailwindcss-language-server \
+  typescript-language-server \
+  vim-language-server \
+  vint \
+  yaml-language-server \
+  yamllint \
+"
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && nvim --headless -c "MasonInstall ${MASON_PKGS}" -c 'qa'
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
