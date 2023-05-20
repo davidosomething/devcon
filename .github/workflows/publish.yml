@@ -42,33 +42,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-  scan:
-    runs-on: ubuntu-latest
-    needs: ["docker"]
-    steps:
-      - name: Check out the repo to access Dockerfile
-        uses: actions/checkout@v3
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Scan Docker image
-        uses: snyk/actions/docker@master
-        continue-on-error: true
-        with:
-          image: ${{ env.REGISTRY }}/${{ github.repository }}:latest
-          args: >
-            --file=Dockerfile --severity-threshold=high
-            --sarif-file-output=snyk.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Upload Snyk report as sarif
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
