@@ -4,9 +4,6 @@ RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   software-properties-common \
   tzdata \
-  && DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:neovim-ppa/unstable \
-  && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   bsdmainutils \
   build-essential \
   curl \
@@ -16,7 +13,6 @@ RUN apt-get update \
   git \
   libfuse2 \
   locales \
-  neovim \
   rsync \
   sudo \
   unzip \
@@ -42,6 +38,15 @@ RUN apt-get update \
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+# ============================================================================
+# unstable neovim PPA, will break dockerfile cache nightly :p
+# ============================================================================
+
+RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:neovim-ppa/unstable \
+  && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y neovim \
+  && rm -rf /var/lib/apt/lists/*
 
 ARG DEVCON_USERNAME=davidosomething
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
