@@ -1,8 +1,9 @@
 name: snyk
 
 on:
-  registry_package:
-    types: [published, updated]
+  workflow_run:
+    workflows: ["publish"]
+    types: [completed]
 
 jobs:
   scan:
