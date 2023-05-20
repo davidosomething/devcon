@@ -36,24 +36,20 @@ jobs:
           push: true
           tags: "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
   scan:
-    permissions:
-      id-token: read
-      contents: read
-      packages: read
     runs-on: ubuntu-latest
     needs: ["docker"]
     steps:
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Log in to the Container registry 📦
+      - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.GITHUB_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Scan Docker image 🐳
+      - name: Scan Docker image
         uses: snyk/actions/docker@master
         continue-on-error: true
         with:
