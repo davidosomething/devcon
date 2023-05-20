@@ -3,6 +3,7 @@ name: publish
 on:
   push:
     branches: ["master"]
+    tags: ["v*.*.*"]
   repository_dispatch:
     types: [dotfiles_update]
   schedule:
@@ -30,18 +31,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
   scan:
     runs-on: ubuntu-latest
     needs: ["docker"]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -55,8 +63,7 @@ jobs:
         with:
           image: "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
           args: >
-            --file=Dockerfile
-            --severity-threshold=high
+            --file=Dockerfile --severity-threshold=high
             --sarif-file-output=snyk.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
