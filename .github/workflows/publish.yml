@@ -2,23 +2,23 @@ name: publish
 
 on:
   push:
-    branches: ['master']
+    branches: ["master"]
   repository_dispatch:
     types: [dotfiles_update]
   schedule:
     # midnightly
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 env:
   REGISTRY: ghcr.io
   VERSION: latest
 
 jobs:
-  publish-docker-image:
-    runs-on: ubuntu-latest
+  docker:
     permissions:
       contents: read
       packages: write
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -30,7 +30,42 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push docker image
-        run: |
-          docker build . --tag "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
-          docker push "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
+  scan:
+    permissions:
+      id-token: read
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    needs: ["docker"]
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry 📦
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.GITHUB_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Scan Docker image 🐳
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        with:
+          image: "${REGISTRY}/${GITHUB_REPOSITORY}:${VERSION}"
+          args: >
+            --file=Dockerfile
+            --severity-threshold=high
+            --sarif-file-output=snyk.sarif
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload Snyk report as sarif
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
