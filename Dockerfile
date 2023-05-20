@@ -1,12 +1,12 @@
 FROM ubuntu:jammy
 
 RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   software-properties-common \
   tzdata \
-  && DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:neovim-ppa/unstable -y \
+  && DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:neovim-ppa/unstable \
   && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   bsdmainutils \
   build-essential \
   curl \
@@ -17,7 +17,6 @@ RUN apt-get update \
   libfuse2 \
   locales \
   neovim \
-  ripgrep \
   rsync \
   sudo \
   unzip \
