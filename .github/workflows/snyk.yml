@@ -2,8 +2,12 @@ name: snyk
 
 on:
   workflow_run:
-    workflows: ["publish"]
+    workflows: [publish]
     types: [completed]
+
+env:
+  REGISTRY: ghcr.io
+  VERSION: latest
 
 jobs:
   scan:
@@ -18,7 +22,7 @@ jobs:
       - name: Check out the repo to access Dockerfile
         uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
+      - name: Log in to container registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
@@ -28,13 +32,13 @@ jobs:
       - name: Scan Docker image
         uses: snyk/actions/docker@master
         continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ env.REGISTRY }}/${{ github.repository }}:latest
+          image: ${{ env.REGISTRY }}/${{ github.repository }}:{{ env.VERSION }}
           args: >
             --file=Dockerfile --severity-threshold=high
             --sarif-file-output=snyk.sarif
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Upload Snyk report as sarif
         uses: github/codeql-action/upload-sarif@v2
