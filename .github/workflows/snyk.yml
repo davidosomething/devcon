@@ -35,7 +35,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ env.REGISTRY }}/${{ github.repository }}:{{ env.VERSION }}
+          image: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.VERSION }}
           args: >
             --file=Dockerfile --severity-threshold=high
             --sarif-file-output=snyk.sarif
