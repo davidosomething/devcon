@@ -46,8 +46,8 @@ RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:neovim-ppa/unstable
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y neovim \
   && rm -rf /var/lib/apt/lists/* \
-  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
-  && useradd \
+  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN useradd \
   --create-home \
   --groups sudo,users \
   --shell /usr/bin/zsh \
@@ -110,8 +110,9 @@ RUN cat "${XDG_CACHE_HOME}/dotfiles-version.json" \
   && git clone https://github.com/asdf-vm/asdf.git "$ASDF_DIR" --branch v0.11.3 \
   && git clone https://github.com/zdharma-continuum/zinit "${XDG_DATA_HOME}/zinit/bin" \
   && git clone https://github.com/davidosomething/dotfiles.git "${HOME}/.dotfiles" \
-  && DKO_AUTO=1 "${HOME}/.dotfiles/bootstrap/symlink" \
-  && source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && DKO_AUTO=1 "${HOME}/.dotfiles/bootstrap/symlink"
+
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git \
   && asdf install nodejs ${NODE_VER} \
   && asdf global nodejs ${NODE_VER} \
