@@ -74,6 +74,7 @@ ADD --chown="${DEVCON_USERNAME}:${DEVCON_USERNAME}" \
 ARG NODE_VER=latest
 ARG PYTHON_VER=3.11.3
 ARG MASON_PKGS="\
+  actionlint \
   ansible-language-server \
   beautysh \
   black \
@@ -98,10 +99,12 @@ ARG MASON_PKGS="\
   stylelint-lsp \
   stylua \
   tailwindcss-language-server \
+  tree-sitter-cli \
   typescript-language-server \
   vim-language-server \
   vint \
   yaml-language-server \
+  yamlfmt \
   yamllint \
 "
 # zinit will load OMZP:asdf to init this
