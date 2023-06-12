@@ -122,7 +122,9 @@ ARG MASON_PKGS="\
 ARG NODE_VER=latest
 ARG PYTHON_VER=3.11.3
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && rtx install nodejs@"${NODE_VER}" \
   && rtx global nodejs ${NODE_VER} \
+  && rtx install python@"${PYTHON_VER}" \
   && rtx global python ${PYTHON_VER} \
   && cat "${HOME}/.tool-versions" \
   && nvim --headless -c 'Lazy! sync' -c 'qa' \
