@@ -119,13 +119,13 @@ ARG MASON_PKGS="\
   yamlfmt \
   yamllint \
   "
-ARG NODE_VER=latest
+ARG NODE_VER=20
 ARG PYTHON_VER=3.11.3
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && rtx install nodejs@"${NODE_VER}" \
-  && rtx global nodejs ${NODE_VER} \
+  && rtx global nodejs "${NODE_VER}" \
   && rtx install python@"${PYTHON_VER}" \
-  && rtx global python ${PYTHON_VER} \
+  && rtx global python "${PYTHON_VER}" \
   && cat "${HOME}/.tool-versions" \
   && nvim --headless -c 'Lazy! sync' -c 'qa' \
   && nvim --headless -c "MasonInstall ${MASON_PKGS}" -c 'qa'
