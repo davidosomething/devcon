@@ -31,22 +31,12 @@ RUN apt-get update \
   xz-utils \
   zlib1g-dev \
   && rm -rf /var/lib/apt/lists/* \
-  && locale-gen en_US.UTF-8
+  && locale-gen en_US.UTF-8 \
+  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
-
-# ============================================================================
-# unstable neovim PPA, will break dockerfile cache nightly :p
-# ============================================================================
-
-ARG DEVCON_USERNAME=davidosomething
-RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:neovim-ppa/unstable \
-  && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y neovim \
-  && rm -rf /var/lib/apt/lists/* \
-  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 RUN wget -qO - https://rtx.pub/gpg-key.pub \
   | gpg --dearmor \
@@ -56,6 +46,13 @@ RUN echo "deb [signed-by=/usr/share/keyrings/rtx-archive-keyring.gpg arch=amd64]
 RUN apt update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y rtx
 
+RUN curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
+  && tar -xzf nvim-linux64.tar.gz \
+  && rm -rf nvim-linux64.tar.gz \
+  && mv nvim-linux64 / \
+  && ln -fs /nvim-linux64/bin/nvim /usr/local/bin/nvim
+
+ARG DEVCON_USERNAME=davidosomething
 RUN useradd \
   --create-home \
   --groups sudo,users \
@@ -119,6 +116,7 @@ ARG MASON_PKGS="\
   yamlfmt \
   yamllint \
   "
+
 ARG NODE_VER=20
 ARG PYTHON_VER=3.11.3
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
@@ -126,7 +124,9 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && rtx global nodejs "${NODE_VER}" \
   && rtx install python@"${PYTHON_VER}" \
   && rtx global python "${PYTHON_VER}" \
-  && cat "${HOME}/.tool-versions" \
+  && cat "${HOME}/.tool-versions"
+
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && nvim --headless -c 'Lazy! sync' -c 'qa' \
   && nvim --headless -c "MasonInstall ${MASON_PKGS}" -c 'qa'
 
