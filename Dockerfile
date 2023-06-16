@@ -49,7 +49,6 @@ RUN apt update \
 RUN curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
   && tar -xzf nvim-linux64.tar.gz \
   && rm -rf nvim-linux64.tar.gz \
-  && mv nvim-linux64 / \
   && ln -fs /nvim-linux64/bin/nvim /usr/local/bin/nvim
 
 ARG DEVCON_USERNAME=davidosomething
