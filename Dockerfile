@@ -126,6 +126,8 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && cat "${HOME}/.tool-versions"
 
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && rtx reshim \
+  && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
   && nvim --headless -c 'Lazy! sync' -c 'qa' \
   && nvim --headless -c "MasonInstall ${MASON_PKGS}" -c 'qa'
 
