@@ -34,6 +34,9 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8 \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+# hack fix, too lazy to fix rtx venv right now
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3.10-venv
+
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
