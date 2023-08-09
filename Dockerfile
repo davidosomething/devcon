@@ -30,12 +30,12 @@ RUN apt-get update \
   tk-dev \
   xz-utils \
   zlib1g-dev \
+  python3-venv \
   && rm -rf /var/lib/apt/lists/* \
   && locale-gen en_US.UTF-8 \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# hack fix, too lazy to fix rtx venv right now
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-virtualenv
+# python3-virtualenv is a hack fix, too lazy to fix rtx venv right now
 
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
