@@ -35,7 +35,7 @@ RUN apt-get update \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # hack fix, too lazy to fix rtx venv right now
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-venv
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-virtualenv
 
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
