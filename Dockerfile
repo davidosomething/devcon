@@ -84,7 +84,7 @@ RUN cat "${XDG_CACHE_HOME}/dotfiles-version.json" \
   && git clone https://github.com/davidosomething/dotfiles.git "${HOME}/.dotfiles" \
   && DKO_AUTO=1 "${HOME}/.dotfiles/bootstrap/symlink"
 
-ARG GO_VER=latest
+ARG GO_VER=1.21
 ARG NODE_VER=20
 ARG PYTHON_VER=3.11.3
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
