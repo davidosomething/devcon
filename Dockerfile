@@ -84,44 +84,12 @@ RUN cat "${XDG_CACHE_HOME}/dotfiles-version.json" \
   && git clone https://github.com/davidosomething/dotfiles.git "${HOME}/.dotfiles" \
   && DKO_AUTO=1 "${HOME}/.dotfiles/bootstrap/symlink"
 
-ARG MASON_PKGS="\
-  actionlint \
-  ansible-language-server \
-  beautysh \
-  black \
-  css-lsp \
-  cssmodules-language-server \
-  docker-compose-language-service \
-  dockerfile-language-server \
-  editorconfig-checker \
-  eslint-lsp \
-  html-lsp \
-  isort \
-  jdtls \
-  jedi-language-server \
-  json-lsp \
-  lua-language-server \
-  markdownlint \
-  prettier \
-  ruff-lsp \
-  selene \
-  shellcheck \
-  shfmt \
-  stylelint-lsp \
-  stylua \
-  tailwindcss-language-server \
-  tree-sitter-cli \
-  typescript-language-server \
-  vim-language-server \
-  vint \
-  yaml-language-server \
-  yamlfmt \
-  yamllint \
-  "
-
+ARG GO_VER=latest
 ARG NODE_VER=20
 ARG PYTHON_VER=3.11.3
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && rtx install go@"${GO_VER}" \
+  && rtx global go "${GO_VER}" \
   && rtx install nodejs@"${NODE_VER}" \
   && rtx global nodejs "${NODE_VER}" \
   && rtx install python@"${PYTHON_VER}" \
@@ -131,7 +99,10 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && rtx reshim \
   && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && export MASON_TOOLS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_auto_installable()))' +q 2>&1 | jq -r '.[]')" \
+  && export MASON_LSPS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_auto_installable_lsps()))' +q 2>&1 | jq -r '.[]')" \
   && nvim --headless -c 'Lazy! sync' -c 'qa' \
-  && nvim --headless -c "MasonInstall ${MASON_PKGS}" -c 'qa'
+  && nvim --headless -c "MasonInstall ${MASON_LSPS}" -c 'qa' \
+  && nvim --headless -c "MasonInstall ${MASON_TOOLS}" -c 'qa'
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
