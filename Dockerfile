@@ -10,6 +10,7 @@ RUN apt-get update \
   file \
   fzf \
   git \
+  jq \
   locales \
   rsync \
   sudo \
@@ -96,13 +97,15 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && rtx global python "${PYTHON_VER}" \
   && cat "${HOME}/.tool-versions"
 
-RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
-  && rtx reshim \
-  && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
-  && export MASON_TOOLS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_auto_installable()))' +q 2>&1 | jq -r '.[]')" \
-  && export MASON_LSPS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_auto_installable_lsps()))' +q 2>&1 | jq -r '.[]')" \
-  && nvim --headless -c 'Lazy! sync' -c 'qa' \
-  && nvim --headless -c "MasonInstall ${MASON_LSPS}" -c 'qa' \
-  && nvim --headless -c "MasonInstall ${MASON_TOOLS}" -c 'qa'
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && nvim --headless -c 'Lazy! sync' -c 'qa'
+
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && MASON_TOOLS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_auto_installable()))' +q 2>&1 | jq -r '.[]')" \
+  nvim --headless -c "MasonInstall ${MASON_TOOLS}" -c 'qa'
+
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && MASON_LSPS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_auto_installable_lsps()))' +q 2>&1 | jq -r '.[]')" \
+  nvim --headless -c "MasonInstall ${MASON_LSPS}" -c 'qa'
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
