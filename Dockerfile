@@ -50,7 +50,8 @@ RUN echo "deb [signed-by=/usr/share/keyrings/rtx-archive-keyring.gpg arch=amd64]
 RUN apt update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y rtx
 
-RUN curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
+
+RUN curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz \
   && tar -xzf nvim-linux64.tar.gz \
   && rm -rf nvim-linux64.tar.gz \
   && ln -fs /nvim-linux64/bin/nvim /usr/local/bin/nvim
