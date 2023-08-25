@@ -69,6 +69,7 @@ WORKDIR "/home/${DEVCON_USERNAME}"
 ENV HOME="/home/${DEVCON_USERNAME}"
 ENV XDG_DATA_HOME="${HOME}/.local/share"
 ENV XDG_CACHE_HOME="${HOME}/.cache"
+ENV NVIM_INSTALL_ALL=1
 
 SHELL ["zsh", "-c"]
 
