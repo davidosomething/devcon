@@ -1,5 +1,7 @@
 FROM ubuntu:jammy
 
+ENV CLICOLOR=0
+
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   software-properties-common \
@@ -109,5 +111,7 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
   && MASON_LSPS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r 'sort | .[]')" \
   nvim --headless -c "MasonInstall ${MASON_LSPS}" -c 'qa'
+
+ENV CLICOLOR=
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
