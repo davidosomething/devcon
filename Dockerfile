@@ -102,15 +102,11 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && cat "${HOME}/.tool-versions"
 
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
-  && nvim --headless -c 'Lazy! sync' -c 'qa'
-
-RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
-  && MASON_TOOLS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r 'sort | .[]')" \
-  nvim --headless -c "MasonInstall ${MASON_TOOLS}" -c 'qa'
-
-RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
-  && MASON_LSPS="$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r 'sort | .[]')" \
-  nvim --headless -c "MasonInstall ${MASON_LSPS}" -c 'qa'
+  && nvim --headless -c 'Lazy! sync' -c 'qa' \
+  && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r 'sort | .[]' | \
+  while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done \
+  && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r 'sort | .[]' | \
+  while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done
 
 ENV CLICOLOR=
 
