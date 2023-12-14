@@ -52,7 +52,6 @@ RUN echo "deb [signed-by=/usr/share/keyrings/rtx-archive-keyring.gpg arch=amd64]
 RUN apt update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y rtx
 
-
 RUN curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz \
   && tar -xzf nvim-linux64.tar.gz \
   && rm -rf nvim-linux64.tar.gz \
@@ -101,12 +100,22 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && rtx global python "${PYTHON_VER}" \
   && cat "${HOME}/.tool-versions"
 
-RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" && nvim --headless -c 'Lazy! sync' -c 'qa'
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && rtx reshim \
+  && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && nvim --headless -c 'Lazy! sync' -c 'qa'
 
-RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r 'sort | .[]' | while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && rtx reshim \
+  && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r 'sort | .[]' | while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done
 
-RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" && rtx reshim && export PATH="$HOME/.local/share/rtx/shims:$PATH" && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r 'sort | .[]' | while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && rtx reshim \
+  && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r 'sort | .[]' | while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done
 
+# unset
 ENV CLICOLOR=
 
 ENTRYPOINT [ "/usr/bin/zsh" ]
