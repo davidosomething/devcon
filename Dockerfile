@@ -108,10 +108,10 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && rtx reshim \
   && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
-  && TOOLS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r 'sort | .[]') \
-  && LSPS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r 'sort | .[]') \
-  && echo $TOOLS | while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done \
-  && echo $LSPS | while read line; do nvim --headless -c "MasonInstall ${line}" -c 'qa'; done
+  && \
+  TOOLS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r 'join(" ")') \
+  LSPS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r 'join(" ")') \
+  nvim --headless -c "MasonInstall ${TOOLS} ${LSPS}" -c 'qa'
 
 # unset
 ENV CLICOLOR=
