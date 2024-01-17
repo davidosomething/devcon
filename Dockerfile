@@ -38,19 +38,19 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8 \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# python3-virtualenv is a hack fix, too lazy to fix rtx venv right now
+# python3-virtualenv is a hack fix, too lazy to fix mise venv right now
 
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-RUN wget -qO - https://rtx.pub/gpg-key.pub \
+RUN wget -qO - https://mise.jdx.dev/gpg-key.pub \
   | gpg --dearmor \
-  | tee /usr/share/keyrings/rtx-archive-keyring.gpg 1> /dev/null
-RUN echo "deb [signed-by=/usr/share/keyrings/rtx-archive-keyring.gpg arch=amd64] https://rtx.pub/deb stable main" \
-  | tee /etc/apt/sources.list.d/rtx.list
+  | tee /usr/share/keyrings/mise-archive-keyring.gpg 1> /dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main" \
+  | tee /etc/apt/sources.list.d/mise.list
 RUN apt update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y rtx
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y mise
 
 RUN curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz \
   && tar -xzf nvim-linux64.tar.gz \
@@ -92,22 +92,22 @@ ARG GO_VER=1.21
 ARG NODE_VER=20
 ARG PYTHON_VER=3.11.3
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
-  && rtx install go@"${GO_VER}" \
-  && rtx global go "${GO_VER}" \
-  && rtx install nodejs@"${NODE_VER}" \
-  && rtx global nodejs "${NODE_VER}" \
-  && rtx install python@"${PYTHON_VER}" \
-  && rtx global python "${PYTHON_VER}" \
+  && mise install go@"${GO_VER}" \
+  && mise global go "${GO_VER}" \
+  && mise install nodejs@"${NODE_VER}" \
+  && mise global nodejs "${NODE_VER}" \
+  && mise install python@"${PYTHON_VER}" \
+  && mise global python "${PYTHON_VER}" \
   && cat "${HOME}/.tool-versions"
 
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
-  && rtx reshim \
-  && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && mise reshim \
+  && export PATH="$HOME/.local/share/mise/shims:$PATH" \
   && nvim --headless -c 'Lazy! sync' -c 'qa'
 
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
-  && rtx reshim \
-  && export PATH="$HOME/.local/share/rtx/shims:$PATH" \
+  && mise reshim \
+  && export PATH="$HOME/.local/share/mise/shims:$PATH" \
   && export TOOLS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r '.[]') \
   && export LSPS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r '.[]') \
   && echo "${TOOLS}\n${LSPS}" | while read line; do nvim --headless -c "MasonInstall $line" -c 'qa'; done
