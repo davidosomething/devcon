@@ -97,8 +97,7 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && mise install nodejs@"${NODE_VER}" \
   && mise global nodejs "${NODE_VER}" \
   && mise install python@"${PYTHON_VER}" \
-  && mise global python "${PYTHON_VER}" \
-  && cat "${HOME}/.tool-versions"
+  && mise global python "${PYTHON_VER}"
 
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && mise reshim \
