@@ -107,9 +107,24 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && mise reshim \
   && export PATH="$HOME/.local/share/mise/shims:$PATH" \
-  && export TOOLS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +cq 0 2>&1 | jq -r '.[]') \
-  && export LSPS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +cq 0 2>&1 | jq -r '.[]') \
-  && echo "${TOOLS}\n${LSPS}" | while read line; do nvim --headless -c "MasonInstall $line" +cq 0; done
+  && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +qa 2>&1 > "${HOME}/mason-tools.json" \
+  && cat "${HOME}/mason-tools.json"
+
+RUN jq -r '.[]' "${HOME}/mason-tools.json" | while read line; \
+  do \
+  nvim --headless -c "MasonInstall $line" +qa 2>&1; \
+  done
+
+RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
+  && mise reshim \
+  && export PATH="$HOME/.local/share/mise/shims:$PATH" \
+  && nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +qa 2>&1 > "${HOME}/mason-lsps.json" \
+  && cat "${HOME}/mason-lsps.json"
+
+RUN jq -r '.[]' "${HOME}/mason-lsps.json" | while read line; \
+  do \
+  nvim --headless -c "MasonInstall $line" +qa 2>&1; \
+  done
 
 # unset
 ENV CLICOLOR=
