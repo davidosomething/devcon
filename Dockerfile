@@ -107,9 +107,9 @@ RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
 RUN source "${HOME}/.dotfiles/zsh/dot.zshrc" \
   && mise reshim \
   && export PATH="$HOME/.local/share/mise/shims:$PATH" \
-  && export TOOLS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +q 2>&1 | jq -r '.[]') \
-  && export LSPS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +q 2>&1 | jq -r '.[]') \
-  && echo "${TOOLS}\n${LSPS}" | while read line; do nvim --headless -c "MasonInstall $line" -c 'qa'; done
+  && export TOOLS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_tools()))' +cq 0 2>&1 | jq -r '.[]') \
+  && export LSPS=$(nvim --headless +'lua vim.print(vim.json.encode(require("dko.tools").get_mason_lsps()))' +cq 0 2>&1 | jq -r '.[]') \
+  && echo "${TOOLS}\n${LSPS}" | while read line; do nvim --headless -c "MasonInstall $line" +cq 0; done
 
 # unset
 ENV CLICOLOR=
